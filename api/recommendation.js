@@ -1,7 +1,6 @@
 module.exports = async (req, res) => {
     const { key, phone, action } = req.query;
     
-    // CORS 헤더 설정
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -9,15 +8,6 @@ module.exports = async (req, res) => {
     if (req.method === 'OPTIONS') {
         res.status(200).end();
         return;
-    }
-    
-    // 디버깅: 환경변수 확인
-    if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) {
-        return res.status(500).json({ 
-            error: 'Config error',
-            hasBaseId: !!process.env.AIRTABLE_BASE_ID,
-            hasToken: !!process.env.AIRTABLE_API_KEY
-        });
     }
     
     if (!key) {
@@ -35,21 +25,19 @@ module.exports = async (req, res) => {
             }
         });
         
-        // 디버깅: Airtable 응답 상태
         if (!response.ok) {
-            const errorText = await response.text();
-            return res.status(response.status).json({ 
-                error: 'Airtable error',
-                status: response.status,
-                detail: errorText,
-                url: url.replace(process.env.AIRTABLE_API_KEY, '***')
-            });
+            if (response.status === 404) {
+                return res.status(404).json({ 
+                    error: 'Not found',
+                    message: '추천서를 찾을 수 없습니다.'
+                });
+            }
+            throw new Error(`Airtable API error: ${response.status}`);
         }
         
         const record = await response.json();
         const fields = record.fields;
         
-        // action=verify: 전화번호 인증
         if (action === 'verify') {
             if (!phone) {
                 return res.status(400).json({ error: 'Phone number is required' });
@@ -105,10 +93,10 @@ module.exports = async (req, res) => {
         });
         
     } catch (error) {
+        console.error('API Error:', error);
         res.status(500).json({ 
             error: 'Server error',
-            message: error.message,
-            stack: error.stack
+            message: '추천서 정보를 가져오는 중 오류가 발생했습니다.'
         });
     }
 };
