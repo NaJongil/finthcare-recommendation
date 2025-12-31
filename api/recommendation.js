@@ -12,11 +12,11 @@ module.exports = async (req, res) => {
     }
     
     // 디버깅: 환경변수 확인
-    if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_TOKEN) {
+    if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) {
         return res.status(500).json({ 
             error: 'Config error',
             hasBaseId: !!process.env.AIRTABLE_BASE_ID,
-            hasToken: !!process.env.AIRTABLE_TOKEN
+            hasToken: !!process.env.AIRTABLE_API_KEY
         });
     }
     
@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
         
         const response = await fetch(url, {
             headers: {
-                'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN}`,
+                'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`,
                 'Content-Type': 'application/json'
             }
         });
@@ -42,7 +42,7 @@ module.exports = async (req, res) => {
                 error: 'Airtable error',
                 status: response.status,
                 detail: errorText,
-                url: url.replace(process.env.AIRTABLE_TOKEN, '***')
+                url: url.replace(process.env.AIRTABLE_API_KEY, '***')
             });
         }
         
