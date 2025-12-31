@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맞춤 전문의 추천서 - 핀스케어</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        .header {
+            background: linear-gradient(135deg, #0065FF 0%, #0052cc 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .header-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        /* 인증 페이지 */
+        .auth-page {
+            display: block;
+            padding: 40px 20px;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+            text-align: center;
+        }
+
+        .auth-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .auth-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .auth-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .auth-input:focus {
+            border-color: #0065FF;
+        }
+
+        .auth-input::placeholder {
+            color: #adb5bd;
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background: #0065FF;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: background 0.2s;
+        }
+
+        .auth-button:hover {
+            background: #0052cc;
+        }
+
+        .auth-button:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+        }
+
+        .auth-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .auth-error.show {
+            display: block;
+        }
+
+        /* 추천서 페이지 */
+        .recommendation-page {
+            display: none;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        /* 진단 요약 카드 */
+        .summary-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: #868e96;
+            margin-bottom: 4px;
+        }
+
+        .summary-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .summary-divider {
+            height: 1px;
+            background: #dee2e6;
+            margin: 12px 0;
+        }
+
+        .summary-note {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        /* 의사 카드 */
+        .doctor-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e9ecef;
+        }
+
+        .doctor-number {
+            display: inline-block;
+            background: #0065FF;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .doctor-main {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .doctor-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .doctor-info {
+            flex: 1;
+        }
+
+        .doctor-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .doctor-hospital {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .appointment-box {
+            background: #e7f5ff;
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .appointment-icon {
+            font-size: 20px;
+        }
+
+        .appointment-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1971c2;
+        }
+
+        .doctor-section {
+            margin-bottom: 14px;
+        }
+
+        .doctor-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        /* 준비사항 */
+        .prepare-card {
+            background: #fff9db;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 8px;
+        }
+
+        .prepare-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e67700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .prepare-list {
+            list-style: none;
+        }
+
+        .prepare-list li {
+            font-size: 13px;
+            color: #666;
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .prepare-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #fab005;
+        }
+
+        /* 푸터 */
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #868e96;
+            margin-bottom: 8px;
+        }
+
+        .footer-brand {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0065FF;
+        }
+
+        .footer-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .footer-button {
+            flex: 1;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .footer-button:hover {
+            opacity: 0.9;
+        }
+
+        .footer-button.kakao {
+            background: #fee500;
+            color: #333;
+        }
+
+        .footer-button.phone {
+            background: #0065FF;
+            color: white;
+        }
+
+        /* 로딩 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #868e96;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e9ecef;
+            border-top-color: #0065FF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 에러 페이지 */
+        .error-page {
+            display: none;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .error-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .error-message {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="header">
+            <div class="logo">FINTH CARE</div>
+            <div class="header-title" id="header-title">맞춤 전문의 추천서</div>
+            <div class="header-subtitle" id="header-subtitle">본인 확인 후 내용을 확인하실 수 있습니다</div>
+        </div>
+
+        <!-- 로딩 -->
+        <div class="loading" id="loading-page">
+            <div class="loading-spinner"></div>
+            <p>정보를 불러오는 중...</p>
+        </div>
+
+        <!-- 에러 페이지 -->
+        <div class="error-page" id="error-page">
+            <div class="error-icon">😥</div>
+            <div class="error-title">추천서를 찾을 수 없습니다</div>
+            <div class="error-message">링크가 올바른지 확인해주세요.</div>
+        </div>
+
+        <!-- 인증 페이지 -->
+        <div class="auth-page" id="auth-page" style="display: none;">
+            <div class="auth-card">
+                <div class="auth-icon">🔐</div>
+                <div class="auth-title">본인 확인</div>
+                <div class="auth-description">
+                    <span id="masked-name">***</span>님의 추천서입니다.<br>
+                    서비스 신청 시 입력한 연락처를 입력해주세요.
+                </div>
+                <input 
+                    type="tel" 
+                    class="auth-input" 
+                    id="phone-input" 
+                    placeholder="010-0000-0000"
+                    maxlength="13"
+                >
+                <button class="auth-button" id="verify-button" onclick="verifyPhone()">
+                    확인
+                </button>
+                <div class="auth-error" id="auth-error">
+                    전화번호가 일치하지 않습니다.
+                </div>
+            </div>
+        </div>
+
+        <!-- 추천서 페이지 -->
+        <div class="recommendation-page" id="recommendation-page">
+            <div class="content">
+                <!-- 진단 요약 -->
+                <div class="summary-card">
+                    <div class="summary-label">진단명</div>
+                    <div class="summary-value" id="disease-name">-</div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-label">의뢰 사유</div>
+                    <div class="summary-note" id="referral-note">-</div>
+                </div>
+
+                <!-- 의사 카드들 -->
+                <div id="doctor-cards"></div>
+
+                <!-- 준비사항 -->
+                <div class="prepare-card">
+                    <div class="prepare-title">📋 진료 전 준비사항</div>
+                    <ul class="prepare-list">
+                        <li>진료의뢰서 원본 (출력 또는 모바일)</li>
+                        <li>기존 검사 결과지 (있는 경우)</li>
+                        <li>현재 복용 중인 약 목록</li>
+                        <li>신분증 및 의료보험증</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 푸터 -->
+            <div class="footer">
+                <div class="footer-text">
+                    예약 변경이나 문의사항이 있으시면 연락주세요.
+                </div>
+                <div class="footer-brand">Powered by FinthCare</div>
+                <div class="footer-buttons">
+                    <button class="footer-button kakao" onclick="openKakaoChat()">
+                        💬 카톡 문의
+                    </button>
+                    <button class="footer-button phone" onclick="callService()">
+                        📞 전화 문의
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URL에서 key 추출
+        function getKeyFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('key');
+        }
+
+        let currentKey = null;
+
+        // 페이지 로드 시 실행
+        window.addEventListener('DOMContentLoaded', async function() {
+            currentKey = getKeyFromUrl();
+            
+            if (!currentKey) {
+                showError();
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/recommendation?key=${currentKey}`);
+                const data = await response.json();
+
+                if (data.error || !data.exists) {
+                    showError();
+                    return;
+                }
+
+                // 마스킹된 이름 표시
+                document.getElementById('masked-name').textContent = data.maskedName;
+                
+                // 인증 페이지 표시
+                document.getElementById('loading-page').style.display = 'none';
+                document.getElementById('auth-page').style.display = 'block';
+                
+                // 입력 필드 포커스
+                document.getElementById('phone-input').focus();
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError();
+            }
+        });
+
+        // 에러 페이지 표시
+        function showError() {
+            document.getElementById('loading-page').style.display = 'none';
+            document.getElementById('error-page').style.display = 'block';
+        }
+
+        // 전화번호 포맷팅
+        document.getElementById('phone-input').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^0-9]/g, '');
+            
+            if (value.length > 3 && value.length <= 7) {
+                value = value.slice(0, 3) + '-' + value.slice(3);
+            } else if (value.length > 7) {
+                value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
+            }
+            
+            e.target.value = value;
+        });
+
+        // 엔터키 처리
+        document.getElementById('phone-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyPhone();
+            }
+        });
+
+        // 전화번호 인증
+        async function verifyPhone() {
+            const phone = document.getElementById('phone-input').value;
+            const button = document.getElementById('verify-button');
+            const errorEl = document.getElementById('auth-error');
+
+            if (!phone || phone.length < 12) {
+                errorEl.textContent = '전화번호를 정확히 입력해주세요.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = '확인 중...';
+            errorEl.classList.remove('show');
+
+            try {
+                const response = await fetch(`/api/recommendation?key=${currentKey}&action=verify&phone=${encodeURIComponent(phone)}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    showRecommendation(data.data);
+                } else {
+                    errorEl.textContent = data.message || '전화번호가 일치하지 않습니다.';
+                    errorEl.classList.add('show');
+                    button.disabled = false;
+                    button.textContent = '확인';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorEl.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+                errorEl.classList.add('show');
+                button.disabled = false;
+                button.textContent = '확인';
+            }
+        }
+
+        // 추천서 표시
+        function showRecommendation(data) {
+            // 헤더 업데이트
+            document.getElementById('header-title').textContent = `${data.patientName}님 맞춤 전문의 추천서`;
+            document.getElementById('header-subtitle').textContent = '핀스케어가 엄선한 전문의를 추천드립니다';
+
+            // 진단 정보
+            document.getElementById('disease-name').textContent = data.diseaseName || '-';
+            
+            // 의뢰 사유 (첫 3줄만)
+            const referralNote = data.referralNote || '';
+            const noteLines = referralNote.split('\n').slice(0, 5).join('\n');
+            document.getElementById('referral-note').textContent = noteLines || '-';
+
+            // 의사 카드 생성
+            const doctorCardsContainer = document.getElementById('doctor-cards');
+            doctorCardsContainer.innerHTML = '';
+
+            const doctors = [
+                { 
+                    hospital: data.hospital1, department: data.department1, 
+                    name: data.specialist1, appointment: data.appointment1,
+                    profile: data.doctorProfile1, reason: data.recommendReason1
+                },
+                { 
+                    hospital: data.hospital2, department: data.department2, 
+                    name: data.specialist2, appointment: data.appointment2,
+                    profile: data.doctorProfile2, reason: data.recommendReason2
+                },
+                { 
+                    hospital: data.hospital3, department: data.department3, 
+                    name: data.specialist3, appointment: data.appointment3,
+                    profile: data.doctorProfile3, reason: data.recommendReason3
+                }
+            ];
+
+            doctors.forEach((doctor, index) => {
+                if (doctor.hospital && doctor.name) {
+                    const card = createDoctorCard(doctor, index + 1);
+                    doctorCardsContainer.appendChild(card);
+                }
+            });
+
+            // 페이지 전환
+            document.getElementById('auth-page').style.display = 'none';
+            document.getElementById('recommendation-page').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        // 의사 카드 생성
+        function createDoctorCard(doctor, number) {
+            const card = document.createElement('div');
+            card.className = 'doctor-card';
+
+            // 예약 일시 포맷팅
+            let appointmentText = '예약 일시 미정';
+            if (doctor.appointment) {
+                const date = new Date(doctor.appointment);
+                const options = { 
+                    year: 'numeric', month: 'long', day: 'numeric', 
+                    weekday: 'short', hour: '2-digit', minute: '2-digit',
+                    hour12: true
+                };
+                appointmentText = date.toLocaleString('ko-KR', options);
+            }
+
+            card.innerHTML = `
+                <div class="doctor-number">추천 ${number}</div>
+                <div class="doctor-main">
+                    <div class="doctor-avatar">👨‍⚕️</div>
+                    <div class="doctor-info">
+                        <div class="doctor-name">${doctor.name}</div>
+                        <div class="doctor-hospital">${doctor.hospital} ${doctor.department}</div>
+                    </div>
+                </div>
+                <div class="appointment-box">
+                    <span class="appointment-icon">📅</span>
+                    <span class="appointment-text">${appointmentText}</span>
+                </div>
+                ${doctor.profile ? `
+                <div class="doctor-section">
+                    <div class="section-title">👤 이런 분입니다</div>
+                    <div class="section-content">${doctor.profile}</div>
+                </div>
+                ` : ''}
+                ${doctor.reason ? `
+                <div class="doctor-section">
+                    <div class="section-title">💡 추천 이유</div>
+                    <div class="section-content">${doctor.reason}</div>
+                </div>
+                ` : ''}
+            `;
+
+            return card;
+        }
+
+        // 카카오톡 문의
+        function openKakaoChat() {
+            window.open('http://pf.kakao.com/_xjizPn/chat', '_blank');
+        }
+
+        // 전화 문의
+        function callService() {
+            window.location.href = 'tel:1811-2468';
+        }
+    </script>
+</body>
+</html>

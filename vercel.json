@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/recommendation",
+      "destination": "/recommendation.html"
+    },
+    {
+      "source": "/api/recommendation",
+      "destination": "/api/recommendation.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
