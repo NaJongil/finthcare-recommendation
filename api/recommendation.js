@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
                     patientName: fields.PatientName || '',
                     diseaseName: fields.DiseaseName || '',
                     diseaseCode: fields.DiseaseCode || '',
-                    referralNote: fields.ReferralNote || '',
+                    referralSummary: fields.ReferralSummary || '',
                     hospital1: fields.Hospital1 || '',
                     department1: fields.Department1 || '',
                     specialist1: fields.Specialist1 || '',
