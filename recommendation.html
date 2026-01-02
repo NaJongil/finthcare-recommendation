@@ -25,7 +25,6 @@
             min-height: 100vh;
         }
 
-        /* 헤더 */
         .header {
             background: linear-gradient(135deg, #0065FF 0%, #0052cc 100%);
             color: white;
@@ -51,7 +50,6 @@
             opacity: 0.85;
         }
 
-        /* 인증 페이지 */
         .auth-page {
             display: block;
             padding: 40px 20px;
@@ -138,7 +136,6 @@
             display: block;
         }
 
-        /* 추천서 페이지 */
         .recommendation-page {
             display: none;
         }
@@ -147,7 +144,6 @@
             padding: 20px;
         }
 
-        /* 진단 요약 카드 */
         .summary-card {
             background: #f8f9fa;
             border-radius: 12px;
@@ -174,13 +170,12 @@
         }
 
         .summary-note {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.5;
+            font-size: 14px;
+            color: #495057;
+            line-height: 1.7;
             white-space: pre-line;
         }
 
-        /* 의사 카드 */
         .doctor-card {
             background: white;
             border-radius: 16px;
@@ -282,7 +277,6 @@
             white-space: pre-line;
         }
 
-        /* 준비사항 */
         .prepare-card {
             background: #fff9db;
             border-radius: 12px;
@@ -319,7 +313,6 @@
             color: #fab005;
         }
 
-        /* 푸터 */
         .footer {
             background: #f8f9fa;
             padding: 20px;
@@ -370,7 +363,6 @@
             color: white;
         }
 
-        /* 로딩 */
         .loading {
             text-align: center;
             padding: 40px;
@@ -391,7 +383,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* 에러 페이지 */
         .error-page {
             display: none;
             padding: 60px 20px;
@@ -418,27 +409,23 @@
 </head>
 <body>
     <div class="container">
-        <!-- 헤더 -->
         <div class="header">
             <div class="logo">FINTH CARE</div>
             <div class="header-title" id="header-title">맞춤 전문의 추천서</div>
             <div class="header-subtitle" id="header-subtitle">본인 확인 후 내용을 확인하실 수 있습니다</div>
         </div>
 
-        <!-- 로딩 -->
         <div class="loading" id="loading-page">
             <div class="loading-spinner"></div>
             <p>정보를 불러오는 중...</p>
         </div>
 
-        <!-- 에러 페이지 -->
         <div class="error-page" id="error-page">
             <div class="error-icon">😥</div>
             <div class="error-title">추천서를 찾을 수 없습니다</div>
             <div class="error-message">링크가 올바른지 확인해주세요.</div>
         </div>
 
-        <!-- 인증 페이지 -->
         <div class="auth-page" id="auth-page" style="display: none;">
             <div class="auth-card">
                 <div class="auth-icon">🔐</div>
@@ -463,22 +450,18 @@
             </div>
         </div>
 
-        <!-- 추천서 페이지 -->
         <div class="recommendation-page" id="recommendation-page">
             <div class="content">
-                <!-- 진단 요약 -->
                 <div class="summary-card">
                     <div class="summary-label">진단명</div>
                     <div class="summary-value" id="disease-name">-</div>
                     <div class="summary-divider"></div>
                     <div class="summary-label">의뢰 사유</div>
-                    <div class="summary-note" id="referral-note">-</div>
+                    <div class="summary-note" id="referral-summary">-</div>
                 </div>
 
-                <!-- 의사 카드들 -->
                 <div id="doctor-cards"></div>
 
-                <!-- 준비사항 -->
                 <div class="prepare-card">
                     <div class="prepare-title">📋 진료 전 준비사항</div>
                     <ul class="prepare-list">
@@ -490,7 +473,6 @@
                 </div>
             </div>
 
-            <!-- 푸터 -->
             <div class="footer">
                 <div class="footer-text">
                     예약 변경이나 문의사항이 있으시면 연락주세요.
@@ -509,7 +491,6 @@
     </div>
 
     <script>
-        // URL에서 key 추출
         function getKeyFromUrl() {
             const params = new URLSearchParams(window.location.search);
             return params.get('key');
@@ -517,7 +498,6 @@
 
         let currentKey = null;
 
-        // 페이지 로드 시 실행
         window.addEventListener('DOMContentLoaded', async function() {
             currentKey = getKeyFromUrl();
             
@@ -535,14 +515,11 @@
                     return;
                 }
 
-                // 마스킹된 이름 표시
                 document.getElementById('masked-name').textContent = data.maskedName;
                 
-                // 인증 페이지 표시
                 document.getElementById('loading-page').style.display = 'none';
                 document.getElementById('auth-page').style.display = 'block';
                 
-                // 입력 필드 포커스
                 document.getElementById('phone-input').focus();
 
             } catch (error) {
@@ -551,13 +528,11 @@
             }
         });
 
-        // 에러 페이지 표시
         function showError() {
             document.getElementById('loading-page').style.display = 'none';
             document.getElementById('error-page').style.display = 'block';
         }
 
-        // 전화번호 포맷팅
         document.getElementById('phone-input').addEventListener('input', function(e) {
             let value = e.target.value.replace(/[^0-9]/g, '');
             
@@ -570,14 +545,12 @@
             e.target.value = value;
         });
 
-        // 엔터키 처리
         document.getElementById('phone-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 verifyPhone();
             }
         });
 
-        // 전화번호 인증
         async function verifyPhone() {
             const phone = document.getElementById('phone-input').value;
             const button = document.getElementById('verify-button');
@@ -615,21 +588,13 @@
             }
         }
 
-        // 추천서 표시
         function showRecommendation(data) {
-            // 헤더 업데이트
             document.getElementById('header-title').textContent = `${data.patientName}님 맞춤 전문의 추천서`;
             document.getElementById('header-subtitle').textContent = '핀스케어가 엄선한 전문의를 추천드립니다';
 
-            // 진단 정보
             document.getElementById('disease-name').textContent = data.diseaseName || '-';
-            
-            // 의뢰 사유 (첫 3줄만)
-            const referralNote = data.referralNote || '';
-            const noteLines = referralNote.split('\n').slice(0, 5).join('\n');
-            document.getElementById('referral-note').textContent = noteLines || '-';
+            document.getElementById('referral-summary').textContent = data.referralSummary || '-';
 
-            // 의사 카드 생성
             const doctorCardsContainer = document.getElementById('doctor-cards');
             doctorCardsContainer.innerHTML = '';
 
@@ -658,18 +623,15 @@
                 }
             });
 
-            // 페이지 전환
             document.getElementById('auth-page').style.display = 'none';
             document.getElementById('recommendation-page').style.display = 'block';
             window.scrollTo(0, 0);
         }
 
-        // 의사 카드 생성
         function createDoctorCard(doctor, number) {
             const card = document.createElement('div');
             card.className = 'doctor-card';
 
-            // 예약 일시 포맷팅
             let appointmentText = '예약 일시 미정';
             if (doctor.appointment) {
                 const date = new Date(doctor.appointment);
@@ -711,12 +673,10 @@
             return card;
         }
 
-        // 카카오톡 문의
         function openKakaoChat() {
             window.open('http://pf.kakao.com/_xjizPn/chat', '_blank');
         }
 
-        // 전화 문의
         function callService() {
             window.location.href = 'tel:1811-2468';
         }
