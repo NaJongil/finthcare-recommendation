@@ -52,7 +52,7 @@ export default async function handler(req, res) {
     if (action === 'verify') {
       const requesterPhone = fields['RequesterPhone'] || '';
       const patientPhone = fields['PatientPhone'] || '';
-      const plannerPhone = fields['PlannerPhone'] || '';
+      const plannerPhone = Array.isArray(fields['PlannerPhone']) ? fields['PlannerPhone'][0] || '' : fields['PlannerPhone'] || '';
       const inputPhone = (phone || '').replace(/[^0-9]/g, '');
 
       const normalizedRequesterPhone = requesterPhone.replace(/[^0-9]/g, '');
