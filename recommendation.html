@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>명의 추천 예약 - 핀스케어</title>
+    <title>맞춤 전문의 추천서 - 핀스케어</title>
     <style>
         * {
             margin: 0;
@@ -25,6 +25,7 @@
             min-height: 100vh;
         }
 
+        /* 헤더 */
         .header {
             background: linear-gradient(135deg, #0065FF 0%, #0052cc 100%);
             color: white;
@@ -50,6 +51,7 @@
             opacity: 0.85;
         }
 
+        /* 인증 페이지 */
         .auth-page {
             display: block;
             padding: 40px 20px;
@@ -136,6 +138,7 @@
             display: block;
         }
 
+        /* 추천서 페이지 */
         .recommendation-page {
             display: none;
         }
@@ -144,6 +147,7 @@
             padding: 20px;
         }
 
+        /* 진단 요약 카드 */
         .summary-card {
             background: #f8f9fa;
             border-radius: 12px;
@@ -170,12 +174,13 @@
         }
 
         .summary-note {
-            font-size: 14px;
-            color: #495057;
-            line-height: 1.7;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
             white-space: pre-line;
         }
 
+        /* 의사 카드 */
         .doctor-card {
             background: white;
             border-radius: 16px;
@@ -236,26 +241,20 @@
             background: #e7f5ff;
             border-radius: 10px;
             padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 16px;
         }
 
-        .appointment-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: #1971c2;
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        .appointment-icon {
+            font-size: 20px;
         }
 
-        .appointment-time {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1864ab;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .appointment-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1971c2;
         }
 
         .doctor-section {
@@ -283,6 +282,7 @@
             white-space: pre-line;
         }
 
+        /* 준비사항 */
         .prepare-card {
             background: #fff9db;
             border-radius: 12px;
@@ -304,7 +304,7 @@
             list-style: none;
         }
 
-        .prepare-list > li {
+        .prepare-list li {
             font-size: 13px;
             color: #666;
             padding: 4px 0;
@@ -312,49 +312,14 @@
             position: relative;
         }
 
-        .prepare-list > li::before {
+        .prepare-list li::before {
             content: '•';
             position: absolute;
             left: 0;
             color: #fab005;
         }
 
-        .prepare-sublist {
-            list-style: none;
-            margin-top: 4px;
-            margin-left: 8px;
-        }
-
-        .prepare-sublist li {
-            font-size: 12px;
-            color: #868e96;
-            padding: 2px 0;
-            padding-left: 14px;
-            position: relative;
-        }
-
-        .prepare-sublist li::before {
-            content: '−';
-            position: absolute;
-            left: 0;
-            color: #adb5bd;
-        }
-
-        .prepare-notice {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px dashed #fab005;
-            font-size: 12px;
-            color: #e67700;
-            display: flex;
-            align-items: flex-start;
-            gap: 6px;
-        }
-
-        .prepare-notice-icon {
-            flex-shrink: 0;
-        }
-
+        /* 푸터 */
         .footer {
             background: #f8f9fa;
             padding: 20px;
@@ -405,6 +370,7 @@
             color: white;
         }
 
+        /* 로딩 */
         .loading {
             text-align: center;
             padding: 40px;
@@ -425,6 +391,7 @@
             to { transform: rotate(360deg); }
         }
 
+        /* 에러 페이지 */
         .error-page {
             display: none;
             padding: 60px 20px;
@@ -451,23 +418,27 @@
 </head>
 <body>
     <div class="container">
+        <!-- 헤더 -->
         <div class="header">
             <div class="logo">FINTH CARE</div>
-            <div class="header-title" id="header-title">명의 추천 예약</div>
+            <div class="header-title" id="header-title">맞춤 전문의 추천서</div>
             <div class="header-subtitle" id="header-subtitle">본인 확인 후 내용을 확인하실 수 있습니다</div>
         </div>
 
+        <!-- 로딩 -->
         <div class="loading" id="loading-page">
             <div class="loading-spinner"></div>
             <p>정보를 불러오는 중...</p>
         </div>
 
+        <!-- 에러 페이지 -->
         <div class="error-page" id="error-page">
             <div class="error-icon">😥</div>
             <div class="error-title">추천서를 찾을 수 없습니다</div>
             <div class="error-message">링크가 올바른지 확인해주세요.</div>
         </div>
 
+        <!-- 인증 페이지 -->
         <div class="auth-page" id="auth-page" style="display: none;">
             <div class="auth-card">
                 <div class="auth-icon">🔐</div>
@@ -492,42 +463,41 @@
             </div>
         </div>
 
+        <!-- 추천서 페이지 -->
         <div class="recommendation-page" id="recommendation-page">
             <div class="content">
+                <!-- 진단 요약 -->
                 <div class="summary-card">
                     <div class="summary-label">진단명</div>
                     <div class="summary-value" id="disease-name">-</div>
                     <div class="summary-divider"></div>
                     <div class="summary-label">의뢰 사유</div>
-                    <div class="summary-note" id="referral-summary">-</div>
+                    <div class="summary-note" id="referral-note">-</div>
                 </div>
 
+                <!-- 의사 카드들 -->
                 <div id="doctor-cards"></div>
 
+                <!-- 준비사항 -->
                 <div class="prepare-card">
                     <div class="prepare-title">📋 진료 전 준비사항</div>
                     <ul class="prepare-list">
-                        <li>진료의뢰서 원본 (병원별로 1부씩 필요)</li>
+                        <li>진료의뢰서 원본 (출력 또는 모바일)</li>
+                        <li>기존 검사 결과지 (있는 경우)</li>
+                        <li>현재 복용 중인 약 목록</li>
                         <li>신분증 및 의료보험증</li>
-                        <li>기존 진료/검사 자료 (있을 경우)
-                            <ul class="prepare-sublist">
-                                <li>검사 결과지</li>
-                                <li>영상검사 CD</li>
-                                <li>조직검사 슬라이드</li>
-                                <li>복용 중인 약 처방전</li>
-                            </ul>
-                        </li>
                     </ul>
-                    <div class="prepare-notice">
-                        <span class="prepare-notice-icon">⚠️</span>
-                        <span>위 내용은 일반적으로 필요한 준비물입니다. 정확한 준비를 위해 각 병원의 안내 문자를 꼭 확인하세요.</span>
-                    </div>
                 </div>
             </div>
 
+            <!-- 푸터 -->
             <div class="footer">
-                <div class="footer-text">
-                    예약에 관해 궁금한 점은 연락주세요.
+                <div class="footer-text" style="text-align: left; font-size: 11px; color: #868e96; line-height: 1.6;">
+                    <ul style="margin: 0; padding-left: 16px;">
+                        <li>핀스케어는 의료기관 또는 의료인으로부터 어떠한 요청이나 대가도 받지 않으며 의료법을 준수합니다.</li>
+                        <li>본 내용은 의료기관, 의료인 선택에 도움을 드리기 위한 자료로 의학적인 판단이나 진료가 아닙니다.</li>
+                        <li>진료 및 치료에 대한 책임은 병원에 있으며 핀스케어는 이로 인한 법적, 의료적 책임을 지지 않습니다.</li>
+                    </ul>
                 </div>
                 <div class="footer-brand">Powered by FinthCare</div>
                 <div class="footer-buttons">
@@ -543,6 +513,7 @@
     </div>
 
     <script>
+        // URL에서 key 추출
         function getKeyFromUrl() {
             const params = new URLSearchParams(window.location.search);
             return params.get('key');
@@ -550,6 +521,7 @@
 
         let currentKey = null;
 
+        // 페이지 로드 시 실행
         window.addEventListener('DOMContentLoaded', async function() {
             currentKey = getKeyFromUrl();
             
@@ -567,11 +539,14 @@
                     return;
                 }
 
+                // 마스킹된 이름 표시
                 document.getElementById('masked-name').textContent = data.maskedName;
                 
+                // 인증 페이지 표시
                 document.getElementById('loading-page').style.display = 'none';
                 document.getElementById('auth-page').style.display = 'block';
                 
+                // 입력 필드 포커스
                 document.getElementById('phone-input').focus();
 
             } catch (error) {
@@ -580,11 +555,13 @@
             }
         });
 
+        // 에러 페이지 표시
         function showError() {
             document.getElementById('loading-page').style.display = 'none';
             document.getElementById('error-page').style.display = 'block';
         }
 
+        // 전화번호 포맷팅
         document.getElementById('phone-input').addEventListener('input', function(e) {
             let value = e.target.value.replace(/[^0-9]/g, '');
             
@@ -597,12 +574,14 @@
             e.target.value = value;
         });
 
+        // 엔터키 처리
         document.getElementById('phone-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 verifyPhone();
             }
         });
 
+        // 전화번호 인증
         async function verifyPhone() {
             const phone = document.getElementById('phone-input').value;
             const button = document.getElementById('verify-button');
@@ -640,13 +619,21 @@
             }
         }
 
+        // 추천서 표시
         function showRecommendation(data) {
-            document.getElementById('header-title').textContent = `${data.patientName} 님을 위한 명의 추천 예약`;
-            document.getElementById('header-subtitle').textContent = '맞춤 추천 명의의 빠른 예약을 확보했습니다';
+            // 헤더 업데이트
+            document.getElementById('header-title').textContent = `${data.patientName}님 맞춤 전문의 추천서`;
+            document.getElementById('header-subtitle').textContent = '핀스케어가 엄선한 전문의를 추천드립니다';
 
+            // 진단 정보
             document.getElementById('disease-name').textContent = data.diseaseName || '-';
-            document.getElementById('referral-summary').textContent = data.referralSummary || '-';
+            
+            // 의뢰 사유 (첫 3줄만)
+            const referralNote = data.referralNote || '';
+            const noteLines = referralNote.split('\n').slice(0, 5).join('\n');
+            document.getElementById('referral-note').textContent = noteLines || '-';
 
+            // 의사 카드 생성
             const doctorCardsContainer = document.getElementById('doctor-cards');
             doctorCardsContainer.innerHTML = '';
 
@@ -675,15 +662,18 @@
                 }
             });
 
+            // 페이지 전환
             document.getElementById('auth-page').style.display = 'none';
             document.getElementById('recommendation-page').style.display = 'block';
             window.scrollTo(0, 0);
         }
 
+        // 의사 카드 생성
         function createDoctorCard(doctor, number) {
             const card = document.createElement('div');
             card.className = 'doctor-card';
 
+            // 예약 일시 포맷팅
             let appointmentText = '예약 일시 미정';
             if (doctor.appointment) {
                 const date = new Date(doctor.appointment);
@@ -705,8 +695,8 @@
                     </div>
                 </div>
                 <div class="appointment-box">
-                    <div class="appointment-label">⚡ 빠른 예약 확보</div>
-                    <div class="appointment-time">📅 ${appointmentText}</div>
+                    <span class="appointment-icon">📅</span>
+                    <span class="appointment-text">${appointmentText}</span>
                 </div>
                 ${doctor.profile ? `
                 <div class="doctor-section">
@@ -725,10 +715,12 @@
             return card;
         }
 
+        // 카카오톡 문의
         function openKakaoChat() {
             window.open('http://pf.kakao.com/_xjizPn/chat', '_blank');
         }
 
+        // 전화 문의
         function callService() {
             window.location.href = 'tel:1811-2468';
         }
