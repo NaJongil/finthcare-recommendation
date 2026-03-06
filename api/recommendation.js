@@ -16,10 +16,10 @@ module.exports = async (req, res) => {
     }
     
     try {
-        // Airtable에서 모든 레코드 조회 후 key 매칭
-        // key = MID(RECORD_ID(), 4, 14) 이므로 RECORD_ID에서 앞 3글자(rec) 제외한 값
+        // Airtable에서 레코드 직접 조회 (key = RECORD_ID에서 'rec' 제외한 값)
+        const recordId = 'rec' + key;
         const response = await fetch(
-            `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/RequestSpecialist`,
+            `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/RequestSpecialist/${recordId}`,
             {
                 headers: {
                     'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN}`,
@@ -27,25 +27,18 @@ module.exports = async (req, res) => {
                 }
             }
         );
-        
+
         if (!response.ok) {
+            if (response.status === 404) {
+                return res.status(404).json({
+                    error: 'Not found',
+                    message: '추천서를 찾을 수 없습니다.'
+                });
+            }
             throw new Error(`Airtable API error: ${response.status}`);
         }
-        
-        const data = await response.json();
-        
-        // key로 레코드 찾기 (RECORD_ID에서 rec 제외한 부분과 매칭)
-        const record = data.records.find(r => {
-            const recordKey = r.id.substring(3); // 'rec' 제거
-            return recordKey === key;
-        });
-        
-        if (!record) {
-            return res.status(404).json({ 
-                error: 'Not found',
-                message: '추천서를 찾을 수 없습니다.'
-            });
-        }
+
+        const record = await response.json();
         
         const fields = record.fields;
         
